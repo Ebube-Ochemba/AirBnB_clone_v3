@@ -41,7 +41,7 @@ class TestDBStorageDocs(unittest.TestCase):
         """Test tests/test_models/test_db_storage.py conforms to PEP8."""
         pep8s = pep8.StyleGuide(quiet=True)
         result = pep8s.check_files(['tests/test_models/test_engine/\
-test_db_storage.py'])
+                                    test_db_storage.py'])
         self.assertEqual(result.total_errors, 0,
                          "Found code style errors (and warnings).")
 
@@ -78,11 +78,34 @@ class TestFileStorage(unittest.TestCase):
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_all_no_class(self):
         """Test that all returns all rows when no class is passed"""
+        pass
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_new(self):
         """test that new adds an object to the database"""
+        pass
 
     @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
     def test_save(self):
         """Test that save properly saves objects to file.json"""
+        pass
+
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_get(self):
+        """Test the get method"""
+        new_state = State(name="California")
+        models.storage.new(new_state)
+        models.storage.save()
+        self.assertEqual(models.storage.get(State, new_state.id), new_state)
+        self.assertIsNone(models.storage.get(State, "nonexistent_id"))
+
+    @unittest.skipIf(models.storage_t != 'db', "not testing db storage")
+    def test_count(self):
+        """Test the count method"""
+        initial_count = models.storage.count()
+        new_state = State(name="California")
+        models.storage.new(new_state)
+        models.storage.save()
+        self.assertEqual(models.storage.count(), initial_count + 1)
+        self.assertEqual(models.storage.count(State), 1)
