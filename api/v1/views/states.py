@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """
-a new view for State objects that handles
+A new view for State objects that handles
 all default RESTFul API actions
 """
 
@@ -13,11 +13,8 @@ from models import storage
 @app_views.route('/states', methods=['GET'], strict_slashes=False)
 def get_states():
     """Retrieves the list of all State objects"""
-    all_states = storage.all(State).values()
-    states_list = []
-    for state in all_states:
-        states_list.append(state.to_dict())
-    return jsonify(states_list)
+    states = [state.to_dict() for state in storage.all(State).values()]
+    return jsonify(states)
 
 
 @app_views.route('/states/<state_id>', methods=['GET'], strict_slashes=False)
