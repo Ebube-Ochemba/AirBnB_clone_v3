@@ -19,6 +19,10 @@ def get_status():
 
 @app_views.route('/stats', methods=['GET'], strict_slashes=False)
 def stats():
+    """
+    Retrieves the number of each object type using
+    the count() method from storage.
+    """
     amenities = storage.count(Amenity)
     cities = storage.count(City)
     places = storage.count(Place)
