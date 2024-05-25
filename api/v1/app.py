@@ -19,6 +19,7 @@ def teardown_db(exception):
 
 @app.errorhandler(404)
 def page_not_found(error):
+    """Handles 404 errors with a JSON response"""
     return jsonify({"error": "Not found"}), 404
 
 
