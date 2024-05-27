@@ -1,3 +1,4 @@
+#!/usr/bin/python3
 """Blueprint for the API views"""
 from flask import Blueprint
 
