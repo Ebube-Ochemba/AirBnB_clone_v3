@@ -32,5 +32,5 @@ class User(BaseModel, Base):
     def __setattr__(self, name, value):
         """Override __setattr__ to hash passwords automatically"""
         if name == "password":
-            value = self.hashlib.md5(value.encode()).hexdigest()
+            value = hashlib.md5(value.encode()).hexdigest()
         super().__setattr__(name, value)
