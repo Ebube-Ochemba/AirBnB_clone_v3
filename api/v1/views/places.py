@@ -115,7 +115,12 @@ def search_places():
 
     if amenities:
         amenity_ids = set(amenities)
-        places = [place for place in places if amenity_ids.issubset({amenity.id for amenity in place.amenities})]
+        filtered_places = []
+        for place in places:
+            place_amenity_ids = {amenity.id for amenity in place.amenities}
+            if amenity_ids.issubset(place_amenity_ids):
+                filtered_places.append(place)
+        places = filtered_places
 
     place_dicts = [place.to_dict() for place in places]
     return jsonify(place_dicts), 200
