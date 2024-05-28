@@ -50,9 +50,10 @@ def create_city(state_id):
     if state is None:
         abort(404)
 
-    req_json = request.get_json()
-    if req_json is None:
-        abort(400, 'Not a JSON')
+    try:
+        req_json = request.get_json()
+    except Exception:
+        abort(400, description="Not a JSON")
 
     if 'name' not in req_json:
         abort(400, 'Missing name')
