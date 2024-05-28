@@ -7,6 +7,7 @@ Amenity objects that handles all default RESTFul API actions
 from flask import jsonify, abort
 from api.v1.views import app_views
 from models import storage
+from models import storage_t
 from models.place import Place
 from models.amenity import Amenity
 
@@ -19,7 +20,12 @@ def get_place_aminities(place_id):
     place = storage.get(Place, place_id)
     if not place:
         abort(404)
-    place_aminities = [amenity.to_dict() for amenity in place.amenities]
+
+    if storage_t == 'db':
+        place_aminities = [amenity.to_dict() for amenity in place.amenities]
+    else:
+        place_aminities = [(storage.get("Amenity", amenity_id).to_dict()
+                            for amenity_id in place.amenity_ids)]
 
     return jsonify(place_aminities)
 
@@ -31,12 +37,23 @@ def delete_place_amenity(place_id, amenity_id):
 
     place = storage.get(Place, place_id)
     amenity = storage.get(Amenity, amenity_id)
-    if any((not place, not amenity, amenity not in place.amenities)):
+    if any((not place, not amenity)):
         abort(404)
 
-    place.amenities.remove(amenity)
-    storage.save()
-    return jsonify({}), 200
+    if storage_t == 'db':
+        if amenity not in place.amenities:
+            abort(404)
+        else:
+            amenity.delete()
+            storage.save()
+            return jsonify({}), 200
+    else:
+        if amenity not in place.amenity_ids:
+            abort(404)
+        else:
+            place.amenity_ids.remove(amenity.id)
+            storage.save()
+            return jsonify({}), 200
 
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
@@ -48,9 +65,18 @@ def link_place_amenity(place_id, amenity_id):
     amenity = storage.get(Amenity, amenity_id)
     if not place or not amenity:
         abort(404)
-    if amenity in place.amenities:
-        return jsonify(amenity.to_dict()), 200
 
-    place.amenities.append(amenity)
-    storage.save()
-    return jsonify(amenity.to_dict()), 201
+    if storage_t == 'db':
+        if amenity in place.amenities:
+            return jsonify(amenity.to_dict()), 200
+        else:
+            place.amenities.append(amenity)
+            place.save()
+            return jsonify(amenity.to_dict()), 201
+    else:
+        if amenity.id in place.amenity_ids:
+            return jsonify(amenity.to_dict()), 200
+        else:
+            place.amenity_ids.append(amenity.id)
+            place.save()
+            return jsonify(amenity.to_dict()), 201
