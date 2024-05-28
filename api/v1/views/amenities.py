@@ -12,6 +12,7 @@ def get_amenities():
     """Retrieves the list of all Amenity objects"""
     amenities = [amenity.to_dict()
                  for amenity in storage.all(Amenity).values()]
+
     return jsonify(amenities)
 
 
@@ -22,6 +23,7 @@ def get_amenity(amenity_id):
     amenity = storage.get(Amenity, amenity_id)
     if amenity is None:
         abort(404)
+
     return jsonify(amenity.to_dict())
 
 
@@ -32,6 +34,7 @@ def delete_amenity(amenity_id):
     amenity = storage.get(Amenity, amenity_id)
     if amenity is None:
         abort(404)
+
     storage.delete(amenity)
     storage.save()
     return jsonify({}), 200
@@ -40,11 +43,14 @@ def delete_amenity(amenity_id):
 @app_views.route('/amenities', methods=['POST'], strict_slashes=False)
 def create_amenity():
     """Creates a new Amenity object"""
-    req_json = request.get_json()
-    if req_json is None:
-        abort(400, 'Not a JSON')
+    try:
+        req_json = request.get_json()
+    except Exception:
+        abort(400, description="Not a JSON")
+
     if 'name' not in req_json:
         abort(400, 'Missing name')
+
     new_amenity = Amenity(**req_json)
     new_amenity.save()
     return jsonify(new_amenity.to_dict()), 201
@@ -54,14 +60,20 @@ def create_amenity():
                  strict_slashes=False)
 def update_amenity(amenity_id):
     """Updates a specific Amenity object by ID"""
-    amenity = storage.get(Amenity, amenity_id)
-    if amenity is None:
-        abort(404)
+    if request.content_type != "application/json":
+        abort(400, description="Not a JSON")
+
     req_json = request.get_json()
     if req_json is None:
         abort(400, 'Not a JSON')
+    
+    amenity = storage.get(Amenity, amenity_id)
+    if amenity is None:
+        abort(404)
+
     for key, value in req_json.items():
         if key not in ['id', 'created_at', 'updated_at']:
             setattr(amenity, key, value)
     amenity.save()
+    
     return jsonify(amenity.to_dict()), 200
