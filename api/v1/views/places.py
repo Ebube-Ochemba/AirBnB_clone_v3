@@ -101,10 +101,7 @@ def search_places():
 
     places = storage.all(Place).values()
     
-    try:
-        req_json = request.get_json()
-    except Exception:
-        abort(400, description="Not a JSON")
+    req_json = request.get_json()
     states_ids = req_json.get('states', [])
     cities_ids = req_json.get('cities', [])
     amenities_ids = req_json.get('amenities', [])
