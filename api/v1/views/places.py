@@ -100,7 +100,7 @@ def search_places():
         abort(400, description="Not a JSON")
 
     places = storage.all(Place).values()
-    
+
     req_json = request.get_json()
     states_ids = req_json.get('states', [])
     cities_ids = req_json.get('cities', [])
