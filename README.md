@@ -159,7 +159,7 @@ Jennifer Huang - [Github](https://github.com/jhuang10123) / [Twitter](https://tw
 
 ---
 Ebube Ochemba - [Github](https://github.com/Ebube-Ochemba) / [Twitter](https://twitter.com/ebube116)
-Lazrag Khalid - [Github](https://github.com/sanotogii) / [Twitter]()
+Lazrag Khalid - [Github](https://github.com/sanotogii)
 
 Second part of Airbnb: Joann Vuong
 ## License
